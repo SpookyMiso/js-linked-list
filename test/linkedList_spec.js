@@ -18,14 +18,7 @@ var expect = chai.expect
   ;
 
 describe('Linked List Generator', function() {
-  var sandbox
-    , baseLinkedList = {
-    head: null,
-    tail: null,
-    add: function(){},
-    remove: function(){},
-    get: function(){},
-  };
+  var sandbox;
 
   var newLinkedList
     , linkedListGenerator = GLOBAL.linkedListGenerator;
@@ -35,16 +28,16 @@ describe('Linked List Generator', function() {
     expect(linkedListGenerator).to.be.a('function');
   });
 
-  describe('Able to create a new Linked List Object', function () {
+  describe('returns a module object used to interact with the private Linked List object', function () {
     beforeEach(function () {
       newLinkedList = linkedListGenerator();
     });
-    it('should return a linked list object', function () {
+    it('should return a module object', function () {
       expect(newLinkedList).to.be.an('object');
     });
   });
 
-  describe('Has methods available through Linked List Object', function () {
+  describe('Module Object has methods available through Linked List Object', function () {
     beforeEach(function () {
       newLinkedList = linkedListGenerator();
     });
@@ -106,17 +99,17 @@ describe('Linked List Generator', function() {
       newNodeA = newLinkedListA.add('http://slashdot.org');
     });
 
-    describe('should return a node object after appending the node', function () {
+    describe('should return a new node object after appending the node to the list', function () {
+      it('should return a new node object', function () {
+        expect(newNodeA).to.not.be.undefined;
+        expect(newNodeA.value).to.be.equal('http://slashdot.org');
+      });
       it('should have a property named `value`', function () {
         expect(newNodeA.value).to.exist;
       });
       it('should have a property named `next`', function () {
         expect(newNodeA.next).to.be.defined;
         expect(newNodeA.next).to.be.null;
-      });
-      it('should return a new node object', function () {
-        expect(newNodeA).to.not.be.undefined;
-        expect(newNodeA).to.be.equal('http://slashdot.org');
       });
     });
 
@@ -126,8 +119,8 @@ describe('Linked List Generator', function() {
         newLinkedListB.add('http://devleague.com');
 
         // test!
-        expect(newLinkedListB.getHead()).to.equal('http://devleague.com');
-        expect(newLinkedListB.getTail()).to.equal('http://devleague.com');
+        expect(newLinkedListB.getHead().value).to.equal('http://devleague.com');
+        expect(newLinkedListB.getTail().value).to.equal('http://devleague.com');
 
         // really the same?
         expect(newLinkedListB.getHead()).to.equal(newLinkedListB.getTail())
@@ -141,15 +134,16 @@ describe('Linked List Generator', function() {
         newLinkedListC.add('http://devleague.com');
 
         // tests!
-        expect(newLinkedListC.getHead()).to.equal('http://eff.org');
-        expect(newLinkedListC.getTail()).to.equal('http://devleague.com');
+        // console.log(newLinkedListC.getHead());
+        expect(newLinkedListC.getHead().value).to.equal('http://eff.org');
+        expect(newLinkedListC.getTail().value).to.equal('http://devleague.com');
 
         // add another node
         newLinkedListC.add('http://xkcd.org');
 
         // test!
-        expect(newLinkedListC.getHead()).to.equal('http://eff.org');
-        expect(newLinkedListC.getTail()).to.equal('http://xkcd.org');
+        expect(newLinkedListC.getHead().value).to.equal('http://eff.org');
+        expect(newLinkedListC.getTail().value).to.equal('http://xkcd.org');
       });
     });
   });
@@ -186,22 +180,22 @@ describe('Linked List Generator', function() {
     describe('takes an argument', function () {
       it('should find a node by it\'s index in the Linked List', function () {
         // urlList Tests
-        expect(urlList.get(0)).to.equal('news.ycombinator.com');
-        expect(urlList.get(1)).to.equal('mozilla.org');
-        expect(urlList.get(2)).to.equal('eff.org');
-        expect(urlList.get(3)).to.equal('icann.org');
+        expect(urlList.get(0).value).to.equal('news.ycombinator.com');
+        expect(urlList.get(1).value).to.equal('mozilla.org');
+        expect(urlList.get(2).value).to.equal('eff.org');
+        expect(urlList.get(3).value).to.equal('icann.org');
 
-        expect(urlList.getHead()).to.equal('news.ycombinator.com');
-        expect(urlList.getTail()).to.equal('icann.org');
+        expect(urlList.getHead().value).to.equal('news.ycombinator.com');
+        expect(urlList.getTail().value).to.equal('icann.org');
 
         // bookList Tests
-        expect(bookList.get(0)).to.equal('Ready Player One');
-        expect(bookList.get(1)).to.equal('1982');
-        expect(bookList.get(2)).to.equal('Neuromancer');
-        expect(bookList.get(3)).to.equal('Snow Crash');
+        expect(bookList.get(0).value).to.equal('Ready Player One');
+        expect(bookList.get(1).value).to.equal('1982');
+        expect(bookList.get(2).value).to.equal('Neuromancer');
+        expect(bookList.get(3).value).to.equal('Snow Crash');
 
-        expect(bookList.getHead()).to.equal('Ready Player One');
-        expect(bookList.getTail()).to.equal('Snow Crash');
+        expect(bookList.getHead().value).to.equal('Ready Player One');
+        expect(bookList.getTail().value).to.equal('Snow Crash');
       });
       it('should return `false` if no node is found', function () {
         expect(urlList.get(4)).to.be.false;
@@ -247,22 +241,28 @@ describe('Linked List Generator', function() {
         // remove middle node
         urlList.remove(2);
         // test new node at position 2
-        expect(urlList.get(2)).to.equal('icann.org');
+
+        expect(urlList.get(2).value).to.equal('icann.org');
         // remove last node
+        // console.log(urlList.getHead());
         urlList.remove(2);
         // retrieve new node at position 2
         expect(urlList.get(2)).to.be.false;
-        expect(urlList.getHead()).to.equal('news.ycombinator.com');
-        expect(urlList.getTail()).to.equal('mozilla.org');
+        expect(urlList.getHead().value).to.equal('news.ycombinator.com');
+        console.log(urlList.getHead())
+        expect(urlList.getTail().value).to.equal('mozilla.org');
 
         // bookList Tests
         //remove first node
         bookList.remove(0);
-        expect(bookList.get(0)).to.equal('1982');
+        expect(bookList.get(0).value).to.equal('1982');
         bookList.remove(1);
-        expect(bookList.getHead()).to.equal('1982');
-        expect(bookList.getTail()).to.equal('Snow Crash');
+        expect(bookList.getHead().value).to.equal('1982');
+        expect(bookList.getTail().value).to.equal('Snow Crash');
       });
+      // it.skip('should return the node that was removed', function () {
+
+      // });
       it('should return `false` if a node cannot be found to be removed', function () {
         expect(urlList.remove(9)).to.be.false;
         expect(urlList.remove(4)).to.be.false;
@@ -300,33 +300,33 @@ describe('Linked List Generator', function() {
       it('should add a new node at a given index', function () {
         // insert into second position of list
         urlList.insert('mozilla.org', 1);
-        expect(urlList.get(0)).to.be.equal('news.ycombinator.com');
-        expect(urlList.get(1)).to.be.equal('mozilla.org');
-        expect(urlList.get(2)).to.be.equal('icann.org');
+        expect(urlList.get(0).value).to.be.equal('news.ycombinator.com');
+        expect(urlList.get(1).value).to.be.equal('mozilla.org');
+        expect(urlList.get(2).value).to.be.equal('icann.org');
 
         // insert into beginning of list
         bookList.insert('Ready Player One', 0);
-        expect(bookList.get(0)).to.be.equal('Ready Player One');
-        expect(bookList.get(1)).to.be.equal('Neuromancer');
-        expect(bookList.get(2)).to.be.equal('Snow Crash');
+        expect(bookList.get(0).value).to.be.equal('Ready Player One');
+        expect(bookList.get(1).value).to.be.equal('Neuromancer');
+        expect(bookList.get(2).value).to.be.equal('Snow Crash');
 
         urlList.insert('devleague.com', 1);
-        expect(urlList.get(0)).to.be.equal('news.ycombinator.com');
-        expect(urlList.get(1)).to.be.equal('devleague.com');
-        expect(urlList.get(2)).to.be.equal('mozilla.org');
-        expect(urlList.get(3)).to.be.equal('icann.org');
+        expect(urlList.get(0).value).to.be.equal('news.ycombinator.com');
+        expect(urlList.get(1).value).to.be.equal('devleague.com');
+        expect(urlList.get(2).value).to.be.equal('mozilla.org');
+        expect(urlList.get(3).value).to.be.equal('icann.org');
       });
       it('should return `false` if the index given is a value larger than the List\'s length', function () {
         // urlList has two items, it's max index value is 1
         // inserting to index `2` should return false
         expect(urlList.insert('boingboing.net', 2)).to.be.false;
-        expect(urlList.get(0)).to.be.equal('news.ycombinator.com');
-        expect(urlList.get(1)).to.be.equal('icann.org');
+        expect(urlList.get(0).value).to.be.equal('news.ycombinator.com');
+        expect(urlList.get(1).value).to.be.equal('icann.org');
 
         // test -1
         expect(bookList.insert('The Stranger', -1)).to.be.false;
-        expect(bookList.get(0)).to.be.equal('Neuromancer');
-        expect(bookList.get(1)).to.be.equal('Snow Crash');
+        expect(bookList.get(0).value).to.be.equal('Neuromancer');
+        expect(bookList.get(1).value).to.be.equal('Snow Crash');
       });
     });
   });
